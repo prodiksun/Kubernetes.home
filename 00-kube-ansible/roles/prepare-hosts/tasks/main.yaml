@@ -1,5 +1,28 @@
 ---
-- name: Add repo kubernetes
+- name: Install packages apt
+  apt:
+    name:
+      - net-tools
+      - apt-transport-https
+      - gnupg
+      - mc
+      - htop
+      - vim
+      - git
+      - bash-completion
+      - nfs-common
+      - python3-apt
+      - tar
+      - rsyslog
+      - chrony
+      - containerd
+      - jq
+      - ca-certificates
+      - curl
+    state: latest
+  when: ansible_facts['os_family'] == "Debian"
+
+- name: Add repo kubernetes for Centos
   when: ansible_facts['os_family'] == "RedHat"
   yum_repository:
     name: kubernetes
@@ -10,7 +33,7 @@
       - 'https://packages.cloud.google.com/yum/doc/yum-key.gpg'
       - 'https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg'
 
-- name: Docker repository for containerd
+- name: Docker repository for containerd Redhat
   when: ansible_facts['os_family'] == "RedHat"
   yum_repository:
     name: docker
@@ -20,6 +43,17 @@
     gpgcheck: yes
     gpgkey:
       - 'https://download.docker.com/linux/centos/gpg'
+
+- name: Add google cloud GPG key
+  apt_key:
+    url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
+    state: present
+
+- name: Add kubernetes repository
+  apt_repository:
+    repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
+    state: present
+    update_cache: yes
 
 - name: Install packages dnf
   dnf:
@@ -46,17 +80,9 @@
 - name: Install packages apt
   apt:
     name:
-      - net-tools
-      - mc
-      - vim
-      - git
-      - bash-completion
-      - nfs-utils
-      - python3
-      - tar
-      - rsyslog
-      - chrony
-      - containerd
+      - kubectl
+      - kubelet
+      - kubeadm
     state: latest
   when: ansible_facts['os_family'] == "Debian"
 
@@ -73,6 +99,7 @@
     enabled: yes
 
 - name: Disable firewalld
+  when: ansible_facts['os_family'] == "RedHat"
   service:
     name: firewalld
     state: stopped
@@ -95,13 +122,14 @@
     replace: '# \1'
 
 - name: Check Disable SELinux
+  when: ansible_facts['os_family'] == "RedHat"
   selinux:
     state: disabled
   register: selinux_ret
 
-- name: Disable SELinux
-  shell: setenforce 0
-  when: selinux_ret.reboot_required
+# - name: Disable SELinux
+#   shell: setenforce 0
+#   when: selinux_ret.reboot_required
 
 - name: Remove containerd config.toml 
   when: ansible_facts['os_family'] == "RedHat"
@@ -156,9 +184,3 @@
   with_items:
     - name: net.ipv4.ip_nonlocal_bind
       value: 1
-
-- name: Add PS1
-  lineinfile:
-    path: /root/.bashrc
-    state: present
-    line: "PS1='\\[\\e[44;36m\\]\\t:[\\w]\\[\\e[0;0m\\]\\n\\[\\e[0;31;04m\\]\\u\\[\\e[0;0m\\]@\\[\\e[0;32m\\]\\h\\[\\e[0;0m\\] \\$ '"

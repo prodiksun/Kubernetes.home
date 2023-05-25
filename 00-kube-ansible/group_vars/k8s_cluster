@@ -2,8 +2,8 @@ ansible_user: root
 
 # Kubernetes parameters
 
-# Versions: 1.24.[0-12], 1.25.[0-8], 1.26.3
-kube_version: 1.26.3
+# Versions: 1.24.[0-12], 1.25.[0-8], 1.26.[0-5]
+kube_version: 1.27.2
 
 kube_domain_name: cluster.local
 service_cidr: "10.233.0.0/18"
@@ -35,7 +35,7 @@ cri_socket: unix:///var/run/containerd/containerd.sock
 imageRepository: registry.k8s.io
 
 # nodelocaldns
-nodelocaldns_image: "registry.k8s.io/dns/k8s-dns-node-cache:1.22.17"
+nodelocaldns_image: "registry.k8s.io/dns/k8s-dns-node-cache:1.22.20"
 ## Change only if this IP is already taken.
 nodelocaldns_local_ip: 169.254.25.10
 

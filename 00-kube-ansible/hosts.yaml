@@ -2,20 +2,16 @@ k8s_masters:
   hosts:
     # Control nodes
     control1.home.local:
-      ansible_host: 172.16.0.250
     # control2.home.local:
     # control3.home.local:
 k8s_workers:
   hosts:
     # Worker nodes
     worker1.home.local:
-      ansible_host: 
     worker2.home.local:
-      ansible_host: 
     worker3.home.local:
-      ansible_host: 
-# k8s_cluster:
-#   children:
-#     k8s_masters:
-#     k8s_workers:
+k8s_cluster:
+  children:
+    k8s_masters:
+    k8s_workers:
         
