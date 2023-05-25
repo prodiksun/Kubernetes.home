@@ -28,7 +28,7 @@ python3 -m pip install ansible
 ssh-keygen
 ```
 
-Копируем ключики в виртуальные машины из [hosts.yaml](hosts.yml):
+Копируем ключики в виртуальные машины из [hosts.yaml](hosts.yaml):
 
  ```shell
 ssh-copy-id root@control1.kryukov.local
