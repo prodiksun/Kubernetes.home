@@ -5,6 +5,8 @@
       - net-tools
       - apt-transport-https
       - gnupg
+      - gnupg2
+      - software-properties-common
       - mc
       - htop
       - vim
@@ -15,7 +17,6 @@
       - tar
       - rsyslog
       - chrony
-      - containerd
       - jq
       - ca-certificates
       - curl
@@ -45,14 +46,31 @@
       - 'https://download.docker.com/linux/centos/gpg'
 
 - name: Add google cloud GPG key
+  when: ansible_facts['os_family'] == "Debian"
   apt_key:
     url: "https://packages.cloud.google.com/apt/doc/apt-key.gpg"
     state: present
 
 - name: Add kubernetes repository
+  when: ansible_facts['os_family'] == "Debian"
   apt_repository:
     repo: "deb https://apt.kubernetes.io/ kubernetes-xenial main"
     state: present
+    filename: kubernetes
+    update_cache: yes
+
+- name: Add docker GPG key
+  when: ansible_facts['os_family'] == "Debian"
+  apt_key:
+    url: "https://download.docker.com/linux/debian/gpg"
+    state: present
+    
+- name: Add docker repository
+  when: ansible_facts['os_family'] == "Debian"
+  apt_repository:
+    repo: "deb https://download.docker.com/linux/debian bullseye stable"
+    state: present
+    filename: docker
     update_cache: yes
 
 - name: Install packages dnf
@@ -77,14 +95,15 @@
     state: latest
   when: ansible_facts['os_family'] == "RedHat"
 
-- name: Install packages apt
+- name: Install packages kube utilites and containerd
+  when: ansible_facts['os_family'] == "Debian"
   apt:
     name:
+      - containerd.io
       - kubectl
       - kubelet
       - kubeadm
     state: latest
-  when: ansible_facts['os_family'] == "Debian"
 
 - name: Enable NTP server
   service:
@@ -137,12 +156,16 @@
     path: /etc/containerd/config.toml
     state: absent 
 
+- name: Runc enable in containerd
+  when: ansible_facts['os_family'] == "Debian"
+  shell: containerd config default > /etc/containerd/config.toml
 
-- name: Containerd
-  service:
-    name: containerd
-    state: started
-    enabled: yes
+- name: Runc enable
+  replace:
+    path: /etc/containerd/config.toml
+    regexp: 'SystemdCgroup = false'
+    replace: 'SystemdCgroup = true'
+
 
 - name: Set crictl.yaml
   copy: 
@@ -151,9 +174,19 @@
     owner: root
     mode: 644
 
+- name: Containerd
+  service:
+    name: containerd
+    state: restarted
+    enabled: yes
+
 - name: Load modules
   modprobe:
     name: br_netfilter
+
+- name: Load modules
+  modprobe:
+    name: overlay
 
 - name: Load module permanet
   copy:
