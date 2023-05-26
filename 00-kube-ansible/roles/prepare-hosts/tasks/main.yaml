@@ -217,3 +217,11 @@
   with_items:
     - name: net.ipv4.ip_nonlocal_bind
       value: 1
+
+- name: Add kubectl completion bash
+  blockinfile:
+    path: /root/.bashrc
+    block: |
+      source <(kubectl completion bash)
+      alias k=kubectl
+      complete -o default -F __start_kubectl k
