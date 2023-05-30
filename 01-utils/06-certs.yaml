@@ -34,11 +34,11 @@ spec:
   - mon.home.local
   - grafana.home.local
   - prom.home.local
-  - netdata.home.local
+  - argocd.home.local
   ipAddresses:
-  - 192.168.218.174
-  - 192.168.218.175
-  - 192.168.218.176
+  - 172.16.0.250
+  # - 172.16.0.252
+  # - 172.16.0.253
   issuerRef:
     name: monitoring-issuer
     # We can reference ClusterIssuers by changing the kind here.
