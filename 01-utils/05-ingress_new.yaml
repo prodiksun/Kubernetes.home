@@ -87,7 +87,7 @@ rules:
 - apiGroups:
   - coordination.k8s.io
   resourceNames:
-  - ingress-controller-leader-nginx
+  - ingress-nginx-leader
   resources:
   - leases
   verbs:
@@ -521,7 +521,7 @@ spec:
       dnsPolicy: ClusterFirst
       nodeSelector:
         kubernetes.io/os: linux
-      # serviceAccountName: ingress-nginx
+      serviceAccountName: ingress-nginx
       terminationGracePeriodSeconds: 300
       volumes:
       - name: webhook-cert
