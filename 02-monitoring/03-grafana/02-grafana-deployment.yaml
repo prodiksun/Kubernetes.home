@@ -52,7 +52,7 @@ spec:
     spec:
       containers:
       - env: []
-        image: grafana/grafana:7.5.2
+        image: grafana/grafana:10.0.0-preview
         name: grafana-sys
         ports:
         - containerPort: 3000
