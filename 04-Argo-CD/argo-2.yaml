@@ -724,7 +724,7 @@ spec:
         - --insecure
         # - --basehref
         # - /argocd
-        image: quay.io/argoproj/argocd:v2.0.1
+        image: quay.io/argoproj/argocd:v2.7.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:
@@ -817,7 +817,7 @@ spec:
         - "20"
         - --operation-processors
         - "10"
-        image: quay.io/argoproj/argocd:v2.0.1
+        image: quay.io/argoproj/argocd:2.7.3
         imagePullPolicy: IfNotPresent
         livenessProbe:
           httpGet:

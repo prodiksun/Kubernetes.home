@@ -35,6 +35,7 @@ spec:
   - grafana.home.local
   - prom.home.local
   - argocd.home.local
+  - pg.home.local
   ipAddresses:
   - 172.16.0.250
   # - 172.16.0.252
