@@ -13,5 +13,8 @@ k8s_workers:
 k8s_cluster:
   children:
     k8s_masters:
+      control1.home.local:
     k8s_workers:
-        
+      worker1.home.local:
+      worker2.home.local:
+      worker3.home.local:
