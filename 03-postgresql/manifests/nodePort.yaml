@@ -2,7 +2,7 @@
 kind: Service
 apiVersion: v1
 metadata:
-  name: zalandodemo01-nodeport
+  name: postgresql-cluster-nodeport
 spec:
   type: NodePort
   ports:
@@ -12,5 +12,5 @@ spec:
       name: postgresql
   selector:
     application: spilo
-    spilo-cluster: zalandodemo01
+    spilo-cluster: postgresql-cluster
     role: master

@@ -120,7 +120,7 @@ spec:
             name: backup-script
           name: config
         - persistentVolumeClaim:
-            claimName: zalandodemo01-backup
+            claimName: postgresql-cluster-backup
           name: backup
   volumeClaimTemplates:
   - metadata:
@@ -134,7 +134,7 @@ spec:
       - ReadWriteOnce
       resources:
         requests:
-          storage: 20Gi
+          storage: 10Gi
 #  - metadata:
 #      labels:
 #        application: spilo
@@ -151,19 +151,19 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: zalandodemo01-backup
+  name: postgresql-cluster-backup
 spec:
   storageClassName: managed-nfs-storage
   accessModes:
     - ReadWriteMany
   resources:
     requests:
-      storage: 2Gi
+      storage: 10Gi
 ---
 apiVersion: v1
 kind: Endpoints
 metadata:
-  name: &cluster_name zalandodemo01
+  name: &cluster_name postgresql-cluster
   labels:
     application: spilo
     spilo-cluster: *cluster_name
@@ -173,7 +173,7 @@ subsets: []
 apiVersion: v1
 kind: Service
 metadata:
-  name: &cluster_name zalandodemo01
+  name: &cluster_name postgresql-cluster
   labels:
     application: spilo
     spilo-cluster: *cluster_name
@@ -189,10 +189,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: zalandodemo01-config
+  name: postgresql-cluster-config
   labels:
     application: spilo
-    spilo-cluster: zalandodemo01
+    spilo-cluster: postgresql-cluster
 spec:
   clusterIP: None
 
@@ -200,15 +200,15 @@ spec:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: &cluster_name zalandodemo01
+  name: &cluster_name postgresql-cluster
   labels:
     application: spilo
     spilo-cluster: *cluster_name
 type: Opaque
 stringData:
-  superuser-password: password
-  replication-password: password
-  admin-password: password
+  superuser-password: postgres
+  replication-password: postgres
+  admin-password: postgres
 
 ---
 apiVersion: v1
